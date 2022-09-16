@@ -13,7 +13,6 @@ const dbConnection = async () => {
 
     } catch (error) {
         throw new Error(error.message || error);
-
     }
 
 }

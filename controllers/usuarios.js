@@ -1,41 +1,58 @@
-const { response , request } = require("express"); //opcional es para que al escribir autocomplete 
+const { response, request } = require("express"); //opcional es para que al escribir autocomplete 
+const bcryptjs = require("bcryptjs");
+const Usuario = require("../models/usuario");
+
+
 
 const usuariosGet = (req = request, res = response) => {
 
-    //capturar todas las query ej ?q=1&sexo=M etc
-    const query = req.query;
+  //capturar todas las query ej ?q=1&sexo=M etc
+  const query = req.query;
 
-    //desestructurar para obtener solo las query que me interesan
+  //desestructurar para obtener solo las query que me interesan
 
-    const { q,sexo } = req.query;
+  const { q, sexo } = req.query;
 
-    res.json({
+  res.json({
     msg: "get API - controlador",
     q,
     sexo
-    });
+  });
 
 }
-const usuariosPost = (req, res = response) => {
+
+const usuariosPost = async (req, res = response) => {
+
   
   //para obtener todos los datos
-  const body = req.body; 
+  const { nombre, correo, password, rol } = req.body;
+  const usuario = new Usuario({ nombre, correo, password, rol });
 
   //para solo rescatar los que me interesan
-  const { nombre, edad} = req.body;
+  //const { nombre, edad} = req.body;
+
+  //verificar si el correo existe
+  const existeEmail = await Usuario.findOne({ correo });
+  if (existeEmail) {
+    return res.status(400).json({
+      "msg": "El usuario ya existe"
+    });
+  }
+  //Encriptar la contraseña
+  const salt = bcryptjs.genSaltSync();
+  usuario.password = bcryptjs.hashSync(password, salt);
+  //guardar en BD
+  await usuario.save();
 
   res.json({
-    msg: "post API - controlador",
-    body, //esto es igual que decir body = body
-    nombre,
-    edad
+    usuario
   });
 
 }
 const usuariosPatch = (req, res = response) => {
 
   //el id que pido por la ruta
-    const id = req.params.id;
+  const id = req.params.id;
   res.json({
     msg: "patch API - controlador",
     id
@@ -59,10 +76,10 @@ const usuariosPut = (req, res = response) => {
 
 module.exports = {
 
-    usuariosGet,
-    usuariosDelete,
-    usuariosPatch,
-    usuariosPost,
-    usuariosPut
+  usuariosGet,
+  usuariosDelete,
+  usuariosPatch,
+  usuariosPost,
+  usuariosPut
 
 }
