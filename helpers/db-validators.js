@@ -16,7 +16,27 @@ const emailExiste = async (correo = '') => {
     }
 }
 
+// const existeUsuarioPorId = async (id = '') => {
+//     const existeID = await Usuario.findById(id);
+//     if (!existeID) {
+//         throw new Error(`El ID ${id} no se encuentra registrado en la BD`)
+//     }
+// }
+
+const existeUsuarioPorId = async( id ) => {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        const existeUsuario = await Usuario.findById(id).exec();
+        if ( !existeUsuario ) {
+            throw new Error(`El id ${ id } no existe`);
+        }
+    } else {
+        throw new Error(`${ id } no es un ID válido de Mongo`);
+    }
+};
+
+
 module.exports = {
     esRoleValido,
-    emailExiste
+    emailExiste,
+    existeUsuarioPorId
 };

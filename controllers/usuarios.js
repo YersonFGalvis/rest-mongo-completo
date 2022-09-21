@@ -4,20 +4,22 @@ const Usuario = require("../models/usuario");
 
 
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async(req = request, res = response) => {
 
   //capturar todas las query ej ?q=1&sexo=M etc
-  const query = req.query;
+  // const query = req.query;
 
   //desestructurar para obtener solo las query que me interesan
 
-  const { q, sexo } = req.query;
+  // const { q, sexo } = req.query
+  const {limit = 5, desde = 0} = req.query;
+const usuarios = await Usuario.find()
+  .skip(Number(desde))
+  .limit(Number(limit));
 
   res.json({
-    msg: "get API - controlador",
-    q,
-    sexo
-  });
+   usuarios
+  });     
 
 }
 
@@ -60,10 +62,24 @@ const usuariosDelete = (req, res = response) => {
   });
 
 }
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async(req, res = response) => {
+
+const {id} = req.params;
+//extraemos los posibles argumentos que pueda mandar el usuario
+const {_id, password, google,correo, ...resto} = req.body;
+
+//TODO validar contra BD
+
+if (password ) {
+  //Encriptar la contraseña
+  const salt = bcryptjs.genSaltSync();
+  resto.password = bcryptjs.hashSync(password, salt);
+}
+
+const usuario = await Usuario.findByIdAndUpdate(id, resto, {new: true});
 
   res.json({
-    msg: "put API - controlador"
+    usuario
   });
 
 }
