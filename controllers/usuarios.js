@@ -23,7 +23,7 @@ const usuariosGet = (req = request, res = response) => {
 
 const usuariosPost = async (req, res = response) => {
 
-  
+
   //para obtener todos los datos
   const { nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
@@ -31,13 +31,7 @@ const usuariosPost = async (req, res = response) => {
   //para solo rescatar los que me interesan
   //const { nombre, edad} = req.body;
 
-  //verificar si el correo existe
-  const existeEmail = await Usuario.findOne({ correo });
-  if (existeEmail) {
-    return res.status(400).json({
-      "msg": "El usuario ya existe"
-    });
-  }
+ 
   //Encriptar la contraseña
   const salt = bcryptjs.genSaltSync();
   usuario.password = bcryptjs.hashSync(password, salt);
