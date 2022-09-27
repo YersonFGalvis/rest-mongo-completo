@@ -34,8 +34,8 @@ const UsuarioSchema = Schema({
 });
 
 UsuarioSchema.methods.toJSON = function() {
-    
-    const { __v, password, ...usuario} = this.toObject();
+    //para quitar el _v y la contraseña, datos que no queremos mostrarle al usuario
+       const { __v, password, ...usuario} = this.toObject();
     
     return usuario;
 }
