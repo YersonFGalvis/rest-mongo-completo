@@ -1,4 +1,4 @@
-const { response, request } = require("express"); //opcional es para que al escribir autocomplete 
+ const { response, request } = require("express"); //opcional es para que al escribir autocomplete 
 const Usuario = require("../models/usuario");
 const bcryptjs = require('bcryptjs');
 

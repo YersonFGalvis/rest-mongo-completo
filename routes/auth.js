@@ -10,7 +10,7 @@ router.post('/login',[
     check('correo', 'El correo no es valido').isEmail(),
     check('correo', 'El correo es obligatorio').not().isEmpty(),
     check('password', 'La contraseña es obligatoria').not().isEmpty(),
-validarCampos
+validarCampos // middleware que recoje todas las excepciones del check, por eso esta al final
 ],login );
 
 
